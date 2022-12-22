@@ -1,6 +1,27 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+
+const char PAWN = 1;
+const char ROOK = 2;
+const char KNIGHT = 3;
+const char BISHOP = 4;
+const char QUEEN = 5;
+const char KING = 6;
+
+const char EMPTY = 0;
+const char WHITE = 1;
+const char BLACK = 2;
+
+struct
+
+char other_color(char color) {
+    if (color > EMPTY) {
+        return color == WHITE ? BLACK : WHITE;
+    }
+    return EMPTY;
+}
 
 uint64_t * init_bitboards() {
 	uint64_t * bitboards = (uint64_t*)malloc(12 * sizeof(uint64_t));
@@ -41,22 +62,38 @@ void print_bitboard(uint64_t bitboard) {
 	}	
 }
 
-uint64_t overlapped_bitboard(uint64_t * bitboards) {
+uint64_t mask_all(const uint64_t * bitboards) {
 	uint64_t mask = 0LL;
-	for (int i = 0 ; i < 12 ; i ++ ) {
+	for (char i = 0 ; i < 12 ; i ++ ) {
 		mask |= bitboards[i];
 	}
 	return mask;
 }
 
-int rook_threatens_king(uint64_t * bitboards) {
-	return 0;
+uint64_t mask_for_color(const uint64_t * bitboards, char color) {
+    uint64_t mask = 0LL;
+    int offset = 6 * (color - 1);
+    for (char i = 0 ; i < 6 ; i ++) {
+        mask |= bitboards[i + offset];
+    }
+    return mask;
+}
+
+
+uint64_t rook_move_mask(const uint64_t * bitboards, char color) {
+    uint64_t white_mask = mask_for_color(bitboards, color);
+    uint64_t black_mask = mask_for_color(bitboards, other_color(color));
+
+}
+
+uint64_t get_bitboard(uint64_t * bitboards, char piece, char color) {
+    return bitboards[(piece * color) - 1];
 }
 
 int main() {
 	uint64_t * bitboards = init_bitboards();
-	print_bitboard(overlapped_bitboard(bitboards));
-	for (int i = 0 ; i < 12 ; i ++ ) {
+	print_bitboard(mask_all(bitboards));
+	for (char i = 0 ; i < 12 ; i ++ ) {
 		printf("--------------------");
 		print_bitboard(bitboards[i]);
 		printf("--------------------");
