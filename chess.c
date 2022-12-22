@@ -79,15 +79,29 @@ uint64_t mask_for_color(const uint64_t * bitboards, char color) {
     return mask;
 }
 
+uint64_t get_bitboard(const uint64_t * bitboards, char piece, char color) {
+    return bitboards[(piece * color) - 1];
+}
+
 
 uint64_t rook_move_mask(const uint64_t * bitboards, char color) {
     uint64_t white_mask = mask_for_color(bitboards, color);
     uint64_t black_mask = mask_for_color(bitboards, other_color(color));
 
-}
+    uint64_t move_mask  = 0LL;
+    uint64_t attack_mask = 0LL;
 
-uint64_t get_bitboard(uint64_t * bitboards, char piece, char color) {
-    return bitboards[(piece * color) - 1];
+    uint64_t my_rooks = get_bitboard(bitboards, ROOK, color);
+    char position = 0;
+    while (my_rooks > 0) {
+        if (my_rooks & 1) {
+            //Detect moves and attacks at position
+        }
+        my_rooks = my_rooks >> 1;
+        position ++;
+
+    }
+    //Somehow return move and attack mask
 }
 
 int main() {
