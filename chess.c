@@ -14,8 +14,6 @@ const char EMPTY = 0;
 const char WHITE = 1;
 const char BLACK = 2;
 
-struct
-
 char other_color(char color) {
     if (color > EMPTY) {
         return color == WHITE ? BLACK : WHITE;
@@ -81,6 +79,10 @@ uint64_t mask_for_color(const uint64_t * bitboards, char color) {
 
 uint64_t get_bitboard(const uint64_t * bitboards, char piece, char color) {
     return bitboards[(piece * color) - 1];
+}
+
+bool is_set(const uint64_t bitboard, char row, char col) {
+    return bitboard & (1 << (row * 8 + col));
 }
 
 
