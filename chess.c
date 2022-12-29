@@ -136,7 +136,7 @@ char from_which(const uint64_t * bitboards, int pos, char color) {
 
 
 
-
+//Struct with 12 spaced list of bitboards and count
 uint64_t * moves_for_color(const uint64_t * bitboards, char color) {
     uint64_t my_mask = mask_for_color(bitboards, color);
     char position = 0;
@@ -174,7 +174,7 @@ uint64_t rook_move_mask(const uint64_t * bitboards, char color) {
 }
 
 double alpha_beta_root(uint64_t * bitboards, int depth, char color) {
-
+    uint64_t *
 }
 
 int main() {
