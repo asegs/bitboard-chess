@@ -60,6 +60,14 @@ void print_bitboard(uint64_t bitboard) {
 	}	
 }
 
+uint64_t * copy_bitboards (const uint64_t * bitboards) {
+    uint64_t * bitboards_copy = malloc(12 * sizeof(uint64_t));
+    for (int i = 0 ; i < 12 ; i ++ ) {
+        bitboards_copy[i] = bitboards[i];
+    }
+    return bitboards_copy;
+}
+
 uint64_t mask_all(const uint64_t * bitboards) {
 	uint64_t mask = 0LL;
 	for (char i = 0 ; i < 12 ; i ++ ) {
@@ -79,6 +87,13 @@ uint64_t mask_for_color(const uint64_t * bitboards, char color) {
 
 uint64_t get_bitboard(const uint64_t * bitboards, char piece, char color) {
     return bitboards[(piece * color) - 1];
+}
+
+uint64_t * create_new_bitboards_with_change_of_2(const uint64_t * old_bitboards, uint64_t change_one, uint64_t change_two, char pos_one, char pos_two) {
+    uint64_t * new_bitboards = copy_bitboards(old_bitboards);
+    new_bitboards[pos_one] = change_one;
+    new_bitboards[pos_two] = change_two;
+    return new_bitboards;
 }
 
 bool is_set(const uint64_t bitboard, char row, char col) {
