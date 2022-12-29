@@ -3,12 +3,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-const char PAWN = 1;
-const char ROOK = 2;
-const char KNIGHT = 3;
-const char BISHOP = 4;
-const char QUEEN = 5;
-const char KING = 6;
+const char PAWN = 0;
+const char ROOK = 1;
+const char KNIGHT = 2;
+const char BISHOP = 3;
+const char QUEEN = 4;
+const char KING = 5;
+const char NONE = 6;
 
 const char EMPTY = 0;
 const char WHITE = 1;
@@ -86,7 +87,26 @@ uint64_t mask_for_color(const uint64_t * bitboards, char color) {
 }
 
 uint64_t get_bitboard(const uint64_t * bitboards, char piece, char color) {
-    return bitboards[(piece * color) - 1];
+    return bitboards[piece + (color - 1) * 6];
+}
+
+double score_board(uint64_t * bitboards) {
+    double score = 0;
+    score += __builtin_popcount(bitboards[0]);
+    score += __builtin_popcount(bitboards[1]) * 5;
+    score += __builtin_popcount(bitboards[2]) * 3;
+    score += __builtin_popcount(bitboards[3]) * 3;
+    score += __builtin_popcount(bitboards[4]) * 9;
+    score += __builtin_popcount(bitboards[5]) * 999;
+
+    score -= __builtin_popcount(bitboards[6]);
+    score -= __builtin_popcount(bitboards[7]) * 5;
+    score -= __builtin_popcount(bitboards[8]) * 3;
+    score -= __builtin_popcount(bitboards[9]) * 3;
+    score -= __builtin_popcount(bitboards[10]) * 9;
+    score -= __builtin_popcount(bitboards[11]) * 999;
+
+    return score;
 }
 
 uint64_t * create_new_bitboards_with_change_of_2(const uint64_t * old_bitboards, uint64_t change_one, uint64_t change_two, char pos_one, char pos_two) {
@@ -96,8 +116,40 @@ uint64_t * create_new_bitboards_with_change_of_2(const uint64_t * old_bitboards,
     return new_bitboards;
 }
 
-bool is_set(const uint64_t bitboard, char row, char col) {
+bool is_set_coords(const uint64_t bitboard, char row, char col) {
     return bitboard & (1 << (row * 8 + col));
+}
+
+bool is_set(const uint64_t bitboard, int pos) {
+    return bitboard & (1 << pos);
+}
+
+char from_which(const uint64_t * bitboards, int pos, char color) {
+    for (int i = 0 ; i < 6 ; i ++ ) {
+        if (is_set(get_bitboard(bitboards, i, color), pos)) {
+            return i;
+        }
+    }
+    return NONE;
+}
+
+
+
+
+
+uint64_t * moves_for_color(const uint64_t * bitboards, char color) {
+    uint64_t my_mask = mask_for_color(bitboards, color);
+    char position = 0;
+    char piece_type = 6;
+    while (my_mask > 0) {
+        if (my_mask & 1) {
+            piece_type = from_which(bitboards, position, color);
+            //instead of returning a bunch of arrays, build this into alpha beta.
+            switch (piece_type) {
+                
+            }
+        }
+    }
 }
 
 
@@ -119,6 +171,10 @@ uint64_t rook_move_mask(const uint64_t * bitboards, char color) {
 
     }
     //Somehow return move and attack mask
+}
+
+double alpha_beta_root(uint64_t * bitboards, int depth, char color) {
+
 }
 
 int main() {
